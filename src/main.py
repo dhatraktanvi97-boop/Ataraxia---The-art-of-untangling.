@@ -1,9 +1,12 @@
+from ataraxia.context import create_context
 from ataraxia.response import generate_response
 from ataraxia.safety import validate_response, get_safe_fallback
 
 
 def run_ataraxia(user_message: str) -> str:
-    response = generate_response(user_message)
+    context = create_context(user_message)
+
+    response = generate_response(context.user_message)
 
     safety_result = validate_response(response)
 
