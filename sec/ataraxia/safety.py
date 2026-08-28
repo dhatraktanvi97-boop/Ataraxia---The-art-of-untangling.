@@ -1,19 +1,31 @@
-def safety_check(text):
+from dataclasses import dataclass
+
+
+@dataclass
+class SafetyResult:
+    safe: bool
+    reason: str = ""
+
+
+def validate_response(response: str) -> SafetyResult:
     """
-    Basic safety gate for Ataraxia responses.
+    Basic safety gate for AI-generated responses.
+
+    This is a placeholder layer.
+    A production system should use a dedicated safety classifier
+    and additional policy checks.
     """
 
-    harmful_topics = [
-        "violence",
-        "self-harm",
-        "suicide",
-        "harm someone"
-    ]
+    if not response or not response.strip():
+        return SafetyResult(False, "Empty response")
 
-    text_lower = text.lower()
+    return SafetyResult(True)
 
-    for topic in harmful_topics:
-        if topic in text_lower:
-            return False
 
-    return True
+def get_safe_fallback() -> str:
+    """Return a neutral fallback when a response fails safety checks."""
+    return (
+        "I can't help with harmful actions. "
+        "I can help you think through the situation safely "
+        "and find a constructive next step."
+    )
