@@ -1,20 +1,17 @@
 from dataclasses import dataclass
+from ataraxia.analyzer import analyze_message, AnalysisResult
 
 
 @dataclass
 class ConversationContext:
     user_message: str
-    emotion: str = "unknown"
-    intent: str = "unknown"
-    situation: str = "unknown"
+    analysis: AnalysisResult
 
 
 def create_context(user_message: str) -> ConversationContext:
-    """
-    Create a basic context object from the user's message.
-    Advanced NLP analysis will be added later.
-    """
+    analysis = analyze_message(user_message)
 
     return ConversationContext(
-        user_message=user_message.strip()
+        user_message=user_message.strip(),
+        analysis=analysis
     )
