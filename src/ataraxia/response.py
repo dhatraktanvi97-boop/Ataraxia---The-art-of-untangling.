@@ -37,6 +37,13 @@ def generate_response(analysis: AnalysisResult) -> str:
         )
 
     # Emotional states
+    if analysis.emotion == "angry":
+        return (
+            "You sound frustrated right now. "
+            "Before reacting, take a moment to pause and identify "
+            "what specifically triggered that feeling."
+        )
+
     if analysis.emotion == "sad":
         return (
             "It sounds like you're having a difficult day. "
@@ -61,3 +68,4 @@ def generate_response(analysis: AnalysisResult) -> str:
         "Tell me a little more about what happened, "
         "and I'll help you understand the situation."
     )
+    
