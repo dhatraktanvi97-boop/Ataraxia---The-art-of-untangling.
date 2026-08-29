@@ -11,7 +11,8 @@ class AnalysisResult:
 def analyze_message(message: str) -> AnalysisResult:
     """
     Basic rule-based message analysis.
-    This will later be replaced or enhanced with an NLP/ML model.
+    This is an initial prototype and will later be upgraded
+    with proper NLP/ML models.
     """
 
     text = message.lower().strip()
@@ -19,20 +20,50 @@ def analyze_message(message: str) -> AnalysisResult:
     emotion = "neutral"
     intent = "unknown"
 
-    if any(word in text for word in ["angry", "mad", "furious", "annoyed"]):
+    # Emotion detection
+    if any(word in text for word in [
+        "angry", "mad", "furious", "annoyed", "irritated"
+    ]):
         emotion = "angry"
-    elif any(word in text for word in ["sad", "upset", "hurt", "crying"]):
+
+    elif any(word in text for word in [
+        "sad", "upset", "hurt", "crying", "low", "down"
+    ]):
         emotion = "sad"
-    elif any(word in text for word in ["worried", "anxious", "nervous"]):
+
+    elif any(word in text for word in [
+        "worried", "anxious", "nervous", "scared"
+    ]):
         emotion = "anxious"
-    elif any(word in text for word in ["happy", "excited", "great"]):
+
+    elif any(word in text for word in [
+        "happy", "excited", "great", "good"
+    ]):
         emotion = "positive"
 
-    if any(word in text for word in ["argument", "fight", "conflict", "argued"]):
+    # Intent detection
+    if any(word in text for word in [
+        "argument", "argued", "fight", "conflict", "disagreement"
+    ]):
         intent = "conflict"
-    elif any(word in text for word in ["help", "advice", "what should", "how should"]):
+
+    elif any(phrase in text for phrase in [
+        "what should i do",
+        "what can i do",
+        "how should i",
+        "need advice",
+        "give me advice",
+        "help me"
+    ]):
         intent = "seeking_advice"
-    elif any(word in text for word in ["feel", "feeling", "vent"]):
+
+    elif any(phrase in text for phrase in [
+        "i need to vent",
+        "just need to vent",
+        "let me vent",
+        "i want to vent",
+        "i just want to talk"
+    ]):
         intent = "venting"
 
     return AnalysisResult(
@@ -40,3 +71,4 @@ def analyze_message(message: str) -> AnalysisResult:
         intent=intent,
         situation=message.strip()
     )
+    
