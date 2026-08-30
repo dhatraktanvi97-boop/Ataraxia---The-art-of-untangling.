@@ -64,3 +64,4 @@ def get_safe_fallback() -> str:
         "I can help you handle the situation safely "
         "and work toward a constructive next step."
     )
+    
