@@ -1,10 +1,19 @@
 from ataraxia.context import create_context
 from ataraxia.response import generate_response
-from ataraxia.safety import validate_response, get_safe_fallback
+from ataraxia.safety import (
+    check_user_input,
+    validate_response,
+    get_safe_fallback,
+)
 from ataraxia.memory import ConversationMemory
 
 
 def run_ataraxia(user_message: str, memory: ConversationMemory) -> str:
+    input_safety = check_user_input(user_message)
+
+    if not input_safety.safe:
+        return get_safe_fallback()
+
     recent_messages = memory.get_recent_messages()
 
     context = create_context(
@@ -14,9 +23,9 @@ def run_ataraxia(user_message: str, memory: ConversationMemory) -> str:
 
     response = generate_response(context)
 
-    safety_result = validate_response(response)
+    response_safety = validate_response(response)
 
-    if not safety_result.safe:
+    if not response_safety.safe:
         response = get_safe_fallback()
 
     memory.add_message(user_message)
@@ -36,4 +45,3 @@ if __name__ == "__main__":
 
         response = run_ataraxia(message, memory)
         print("Ataraxia:", response)
-        
