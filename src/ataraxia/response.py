@@ -1,13 +1,17 @@
-from ataraxia.analyzer import AnalysisResult
+from ataraxia.context import ConversationContext
 
 
-def generate_response(analysis: AnalysisResult) -> str:
+def generate_response(context: ConversationContext) -> str:
     """
-    Generate a context-aware response based on emotion and intent.
+    Generate a response using the current analysis and recent conversation.
     """
 
-    emotion = analysis.emotion
-    intent = analysis.intent
+    emotion = context.analysis.emotion
+    intent = context.analysis.intent
+    recent_messages = context.recent_messages
+
+    # Use previous conversation when available
+    has_previous_context = len(recent_messages) > 0
 
     # Conflict + anger
     if intent == "conflict" and emotion == "angry":
@@ -35,12 +39,19 @@ def generate_response(analysis: AnalysisResult) -> str:
             "afraid might happen next. Focus on what you can control."
         )
 
-    # Conflict without detected emotion
+    # Conflict
     if intent == "conflict":
         return (
             "It sounds like you're dealing with a conflict. "
             "Try to understand both sides of the situation "
             "and discuss the issue calmly rather than reacting immediately."
+        )
+
+    # Advice-seeking with previous context
+    if intent == "seeking_advice" and has_previous_context:
+        return (
+            "Based on what you've shared so far, let's look at the situation "
+            "step by step and focus on what you can do next."
         )
 
     # Advice-seeking
@@ -58,7 +69,7 @@ def generate_response(analysis: AnalysisResult) -> str:
             "You can explain what happened, and we'll work through it."
         )
 
-    # Emotional states without a specific intent
+    # Emotional states
     if emotion == "angry":
         return (
             "You sound frustrated right now. "
@@ -86,8 +97,15 @@ def generate_response(analysis: AnalysisResult) -> str:
             "What happened that made you feel this way?"
         )
 
-    # Default response
+    # Previous context but unknown emotion/intent
+    if has_previous_context:
+        return (
+            "I have some context from what you shared earlier. "
+            "Tell me a little more about what you're experiencing now."
+        )
+
     return (
         "Tell me a little more about what happened, "
         "and I'll help you understand the situation."
     )
+    
